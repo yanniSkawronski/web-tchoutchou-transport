@@ -1,58 +1,43 @@
-
-
 # Cahier des charges — Projet libre
-
-> Template pour votre cahier des charges. Adaptez-le à votre projet.
 
 ## 1. Informations générales
 
-- **Nom du projet** :
-- **Membres de l'équipe** :
-- **Lien du dépôt Git** :
+- **Nom du projet** : Tchoutchou transport
+- **Membres de l'équipe** : Tadeusz Kondracki, Jules Rossier, Aymeric Siegenthaler, Yanni Skawronski
+- **Lien du dépôt Git** : [ici](https://github.com/yanniSkawronski/web-tchoutchou-transport)
 
 ## 2. Description du projet
 
-Quelques phrases pour présenter l'idée : ce que fait l'application, à quoi
-elle sert, et ce qui vous motive à la réaliser.
+Site Web permettant la planification et la visualisation de ses trajets en transport public, inspiré par l'application des CFF.
 
 ## 3. Objectifs
 
-Objectifs principaux du point de vue utilisateur (par ex. *"permettre à un·e utilisateur·rice de…"*).  
+- Déterminer les connexions possibles entre un point A et un point B à un moment donné
+- Donner un point de départ et d'arrivée sur une carte, et déterminer les trajets possibles
+- Afficher le trajet précis sur une carte
+- Intégration d'un affichage de la météo à l'arrivée
+- Lister les différens départ depuis une station, enregistrer un trajet, mettre en favoris des stations, .... TBD
 
-## 4. Fonctionnalités
+## 3.1 Ajouts optionnels
 
-### 4.1 Principales
+- To be defined éventuellement
 
-Les fonctionnalités que votre application **doit** offrir pour être considérée
-comme aboutie.
-
-- …
-
-### 4.2 Optionnelles
-
-Les fonctionnalités bonus si le temps le permet.
-
-- …
-
-## 5. Technologies
+## 4. Technologies
 
 Listez les technologies envisagées et **justifiez brièvement chaque choix**.
 
 Par exemple :
 
-- **Frontend** : *(framework, UI, librairies spécialisées comme PixiJS,
-  Three.js, Leaflet…)*
-- **Backend** : *(runtime, framework, communication temps réel si
-  applicable)*
-- **Base de données** : *(SGBD + ORM/driver)*
-- **Authentification** *(si applicable)* :
-- **Autres outils** : *(tests, linter, build…)*
+- **Frontend** : Angular avec Typescript
+- **Backend** : Nest.js
+- **Base de données** : PostgreSQL, communication avec Prisma
+- **Authentification** : Oui, utilisation de cookies, stack précise à définir
+- **Autres outils** : API OJP de OpenTransportData, Leaflet, API météo
 
-## 6. Architecture
+## 5. Architecture
 
-Vue d'ensemble des composants et de leurs interactions (client, serveur, base
-de données, services tiers…). Un petit schéma est bienvenu.
+Frontend qui communique avec le backend, backend s'occupe de communiquer avec les différentes API externes et de persister les données dans la base de données.
 
-## 7. Évolutions possibles
+## 6. Évolutions possibles
 
-*(Optionnel)* Pistes d'évolution identifiées mais hors périmètre du labo.
+To be defined
