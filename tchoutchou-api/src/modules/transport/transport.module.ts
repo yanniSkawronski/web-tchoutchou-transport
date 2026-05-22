@@ -1,7 +1,8 @@
-import {Module} from "@nestjs/common";
-import {TransportController} from "./transport.controller";
-import {TransportService} from "./transport.service";
 import { HttpModule } from '@nestjs/axios';
+import {Module} from "@nestjs/common";
+
+import {TransportController} from "./transport.controller.js";
+import {TransportApiService} from "./transport-api.service.js";
 
 
 @Module({
@@ -15,6 +16,7 @@ import { HttpModule } from '@nestjs/axios';
         }),
     ],
     controllers: [TransportController],
-    providers: [TransportService]
+    providers: [TransportApiService]
 })
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class TransportModule{}

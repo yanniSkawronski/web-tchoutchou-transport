@@ -1,6 +1,6 @@
 import {z} from "zod";
 
-import {CoordinateSchema} from "./coordinate.schema";
+import {CoordinateSchema} from "./coordinate.schema.js";
 export const LocationSchema = z.object({
     id: z.string(),
     name: z.string(),
