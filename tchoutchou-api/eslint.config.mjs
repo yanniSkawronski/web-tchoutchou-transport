@@ -17,17 +17,21 @@ export default tseslint.config(
         'dist',
         'node_modules',
         'coverage',
+        'src/generated',
+        'prisma.config.ts',
       ],
     },
 
     js.configs.recommended,
 
-    ...tseslint.configs.strictTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked,
-
     {
-      files: ['**/*.ts'],
+      files: ['**/*.ts', '**/*.tsx'],
+      extends: [
+        ...tseslint.configs.strictTypeChecked,
+        ...tseslint.configs.stylisticTypeChecked,
+      ],
       languageOptions: {
+        parser: tseslint.parser,
         parserOptions: {
           project: true,
           tsconfigRootDir: import.meta.dirname,
@@ -38,6 +42,7 @@ export default tseslint.config(
       },
 
       plugins: {
+        '@typescript-eslint': tseslint.plugin,
         import: importPlugin,
         'unused-imports': unusedImports,
         'simple-import-sort': simpleImportSort,
@@ -47,9 +52,6 @@ export default tseslint.config(
       },
 
       rules: {
-        /*
-         * TYPESCRIPT STRICT
-         */
         '@typescript-eslint/no-explicit-any': 'error',
         '@typescript-eslint/consistent-type-imports': 'error',
         '@typescript-eslint/no-floating-promises': 'error',
@@ -61,10 +63,14 @@ export default tseslint.config(
         '@typescript-eslint/explicit-function-return-type': 'error',
         '@typescript-eslint/explicit-module-boundary-types': 'error',
         '@typescript-eslint/explicit-member-accessibility': 'error',
+                '@typescript-eslint/prefer-nullish-coalescing': 'error',
+        '@typescript-eslint/await-thenable': 'error',
+        '@typescript-eslint/no-unnecessary-type-constraint': 'error',
+        '@typescript-eslint/unbound-method': 'error',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
 
-        /*
-         * IMPORTS
-         */
         'unused-imports/no-unused-imports': 'error',
         'unused-imports/no-unused-vars': [
           'warn',
@@ -79,29 +85,17 @@ export default tseslint.config(
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',
 
-        /*
-         * PROMISES
-         */
         'promise/catch-or-return': 'error',
         'promise/no-return-wrap': 'error',
 
-        /*
-         * CODE QUALITY
-         */
         'sonarjs/cognitive-complexity': ['error', 15],
         'sonarjs/no-duplicate-string': 'warn',
 
-        /*
-         * UNICORN
-         */
         'unicorn/prefer-node-protocol': 'error',
         'unicorn/consistent-function-scoping': 'off',
         'unicorn/no-array-for-each': 'error',
         'unicorn/prevent-abbreviations': 'off',
 
-        /*
-         * GENERAL
-         */
         eqeqeq: ['error', 'always'],
         curly: ['error', 'all'],
         'no-console': [

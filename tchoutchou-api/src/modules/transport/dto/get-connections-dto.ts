@@ -3,7 +3,6 @@ import {
     ArrayMaxSize,
     IsArray,
     IsBoolean,
-    IsIn,
     IsNumber,
     IsOptional,
     IsString,
@@ -43,18 +42,14 @@ export class GetConnectionsDto {
     @IsBoolean()
     public readonly isArrivalTime!: boolean;
 
-    @IsArray()
-    @IsString({ each: true })
-    @IsIn(['train', 'tram', 'ship', 'bus', 'cableway'], { each: true })
-    @IsOptional()
-    public readonly transportations?: string[];
-
+    @Transform(({ value }) => Number(value))
     @IsOptional()
     @IsNumber()
     @Min(1)
     @Max(16)
     public readonly limit?: number;
 
+    @Transform(({ value }) => Number(value))
     @IsOptional()
     @IsNumber()
     @Min(0)
