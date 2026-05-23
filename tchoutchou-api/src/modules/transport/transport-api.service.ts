@@ -3,6 +3,7 @@ import {BadGatewayException, Injectable} from "@nestjs/common";
 import {map, Observable} from "rxjs";
 import {z} from 'zod';
 
+import {GetConnectionsDto} from "./dto/get-connections-dto.js";
 import {LocationSchema} from "./schemas/location.schema.js";
 
 export const LocationsResponseSchema = z.object({
@@ -31,5 +32,9 @@ export class TransportApiService {
                 return parsed.data;
             })
         );
+    }
+
+    public getConnections(dto: GetConnectionsDto):Observable<unknown>{
+        return this.httpService.get(`${this.#baseUrl}/connections`, {params: dto});
     }
 }
