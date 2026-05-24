@@ -5,3 +5,14 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model FavoriteStation {
+  id        String @id @default(uuid())
+  userId    Int
+  stationId String
+  stationName String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, stationId])
+  @@index([userId])
+}
