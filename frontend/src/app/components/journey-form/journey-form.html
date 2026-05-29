@@ -1,0 +1,20 @@
+<form>
+  <mat-form-field>
+    <mat-label>Station de départ</mat-label>
+    <input [formField]="tripRequestForm.stationFrom" matInput />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Station d'arrivée</mat-label>
+    <input [formField]="tripRequestForm.stationTo" matInput />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Horaire</mat-label>
+    <input [formField]="tripRequestForm.schedule" type="datetime-local" matInput />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Yo</mat-label>
+    <input type="checkbox" [formField]="tripRequestForm.scheduleForArrivalTime" />
+  </mat-form-field>
+</form>
+
+<p>{{tripRequestForm.schedule().value()}}</p>

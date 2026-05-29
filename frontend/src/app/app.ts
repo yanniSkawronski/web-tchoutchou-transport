@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
+import { JourneyForm } from './components/journey-form/journey-form';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [JourneyForm],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
