@@ -1,0 +1,55 @@
+<section class="connections-page">
+  <h1>Rechercher un trajet</h1>
+
+  <form class="search-form" (submit)="search(); $event.preventDefault()">
+    <mat-form-field appearance="outline">
+      <mat-label>Station de départ</mat-label>
+      <input
+        matInput
+        type="text"
+        [value]="stationFrom()"
+        (input)="onStationFromInput($event)"
+        placeholder="p. ex. Lausanne"
+        autocomplete="off"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Station d'arrivée</mat-label>
+      <input
+        matInput
+        type="text"
+        [value]="stationTo()"
+        (input)="onStationToInput($event)"
+        placeholder="p. ex. Genève"
+        autocomplete="off"
+      />
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="datePicker"
+          [value]="date()"
+          (dateChange)="onDateChange($event)"
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="datePicker" />
+        <mat-datepicker #datePicker />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Heure</mat-label>
+        <input matInput type="time" [value]="time()" (input)="onTimeInput($event)" />
+      </mat-form-field>
+    </div>
+
+    <mat-radio-group [value]="timeType()" (change)="timeType.set($event.value)" class="radio-group">
+      <mat-radio-button value="departure">Départ</mat-radio-button>
+      <mat-radio-button value="arrival">Arrivée</mat-radio-button>
+    </mat-radio-group>
+
+    <button mat-flat-button type="submit" [disabled]="!isValid()">Search</button>
+  </form>
+</section>
