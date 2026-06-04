@@ -3,9 +3,7 @@ import { AfterViewInit, Component, Inject, PLATFORM_ID, ViewChild, ViewContainer
 
 @Component({
   selector: 'map-wrapper',
-  template: `<div style="height: 300px; width: 300px">
-    <ng-container #host />
-  </div>`,
+  template: `<ng-container #host />`,
 })
 export class MapWrapper implements AfterViewInit {
   @ViewChild('host', { read: ViewContainerRef, static: true })

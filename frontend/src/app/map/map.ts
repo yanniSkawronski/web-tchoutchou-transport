@@ -5,5 +5,6 @@ import { MapWrapper } from '../components/map-wrapper.component';
   selector: 'app-map',
   imports: [MapWrapper],
   templateUrl: './map.html',
+  styleUrl: './map.css',
 })
 export class MapRoute {}
