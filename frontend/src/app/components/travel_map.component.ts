@@ -17,9 +17,9 @@ export class TravelMap {
   longitude = input(6.580459);
   leaflet_options = {
     layers: [
-      tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', { maxZoom: 18, attribution: '...', minZoom: 5 }),
+      tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', { maxZoom: 12, attribution: '...', minZoom: 8 }),
     ],
-    zoom: 13,
+    zoom: 9,
     center: latLng(46.534710, 6.580459)
   };
 
