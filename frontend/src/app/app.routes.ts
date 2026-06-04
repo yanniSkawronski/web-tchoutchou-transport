@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Connections } from './connections/connections';
 import { Authentication } from './authentication/authentication';
 import { Timetable } from './timetable/timetable';
+import { MapRoute } from './map/map';
 
 export const routes: Routes = [
   {
@@ -15,5 +16,9 @@ export const routes: Routes = [
   {
     path: 'timetable',
     component: Timetable,
+  },
+  {
+    path: 'map',
+    component: MapRoute,
   },
 ];

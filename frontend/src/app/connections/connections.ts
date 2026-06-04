@@ -5,6 +5,7 @@ import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MapWrapper } from '../components/map-wrapper.component';
 
 const FR_DATE_FORMATS: MatDateFormats = {
   parse: { dateInput: null },
@@ -24,6 +25,7 @@ const FR_DATE_FORMATS: MatDateFormats = {
     MatDatepickerModule,
     MatRadioModule,
     MatButtonModule,
+    MapWrapper
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
