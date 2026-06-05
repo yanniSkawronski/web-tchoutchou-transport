@@ -1,0 +1,7 @@
+.map-page {
+  max-width: 80vw;
+  max-height: 100vh;
+  height: 100vh;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
