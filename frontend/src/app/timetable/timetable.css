@@ -8,6 +8,14 @@
   justify-content: space-between;
 }
 
+.timetable-header {
+  gap: 16px;
+}
+
+.station-select {
+  min-width: 200px;
+}
+
 .reload-btn {
   margin-left: auto;
 }

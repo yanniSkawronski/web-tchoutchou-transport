@@ -1,9 +1,11 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { httpResource } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
 interface Stop {
@@ -30,28 +32,32 @@ const TIME_FORMAT = new Intl.DateTimeFormat('fr-CH', {
 
 @Component({
   selector: 'app-timetable',
-  imports: [MatButtonModule, MatCardModule, MatIconModule, MatProgressBarModule, MatTableModule],
+  imports: [
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatSelectModule,
+    MatTableModule,
+  ],
   templateUrl: './timetable.html',
   styleUrl: './timetable.css',
 })
 export class Timetable {
   readonly apiBaseUrl = 'https://transport.opendata.ch/v1';
-  readonly STATION = 'Lausanne';
+  readonly STATIONS = ['Lausanne', 'Prilly-Malley', 'Temple de Broye'] as const;
+  readonly STATION = signal<string>(this.STATIONS[0]);
   readonly LIMIT = 10;
   readonly displayedColumns = ['time', 'platform', 'transportName', 'to'];
 
   readonly resource = httpResource<StationboardResponse>(
     () =>
       this.apiBaseUrl +
-      `/stationboard?station=${encodeURIComponent(this.STATION)}&limit=${this.LIMIT}`,
+      `/stationboard?station=${encodeURIComponent(this.STATION())}&limit=${this.LIMIT}`,
   );
 
-  // resource.value() throws when the resource is in error state, which would crash change
-  // detection. Gate it behind hasValue() so the template can render unconditionally.
-  readonly stationLabel = computed(() =>
-    this.resource.hasValue() ? (this.resource.value().station.name ?? this.STATION) : this.STATION,
-  );
-
+  // resource.value() throws when the resource is in error state — gate access behind hasValue().
   readonly rows = computed<Entry[]>(() =>
     this.resource.hasValue() ? this.resource.value().stationboard : [],
   );

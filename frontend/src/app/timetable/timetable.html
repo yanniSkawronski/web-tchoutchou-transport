@@ -1,6 +1,17 @@
 <mat-card class="timetable-card">
-  <mat-card-header>
-    <mat-card-title> Départs — {{ stationLabel() }} </mat-card-title>
+  <mat-card-header class="timetable-header">
+    <mat-card-title>Départs</mat-card-title>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="station-select">
+      <mat-label>Station</mat-label>
+      <mat-select
+        [value]="STATION()"
+        (selectionChange)="STATION.set($event.value)"
+      >
+        @for (s of STATIONS; track s) {
+          <mat-option [value]="s">{{ s }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
     <button mat-icon-button class="reload-btn" aria-label="Recharger" (click)="reload()">
       <mat-icon>refresh</mat-icon>
     </button>
