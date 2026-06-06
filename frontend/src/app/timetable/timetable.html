@@ -1,1 +1,53 @@
-<p>timetable works!</p>
+<mat-card class="timetable-card">
+  <mat-card-header class="timetable-header">
+    <mat-card-title>Départs</mat-card-title>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="station-select">
+      <mat-label>Station</mat-label>
+      <mat-select
+        [value]="STATION()"
+        (selectionChange)="STATION.set($event.value)"
+      >
+        @for (s of STATIONS; track s) {
+          <mat-option [value]="s">{{ s }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <button mat-icon-button class="reload-btn" aria-label="Recharger" (click)="reload()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (resource.isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+    } @else if (resource.error()) {
+    <p class="error">Impossible de charger les départs.</p>
+    <button mat-stroked-button (click)="reload()">Réessayer</button>
+    } @else {
+    <table mat-table [dataSource]="rows()" class="timetable-table">
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef>Heure</th>
+        <td mat-cell *matCellDef="let row">{{ formatTime(row.stop.departure) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="platform">
+        <th mat-header-cell *matHeaderCellDef>Voie</th>
+        <td mat-cell *matCellDef="let row">{{ row.stop.platform || '—' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="transportName">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let row">{{ row.category }} {{ row.number }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="to">
+        <th mat-header-cell *matHeaderCellDef>Destination</th>
+        <td mat-cell *matCellDef="let row">{{ row.to }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    }
+  </mat-card-content>
+</mat-card>
