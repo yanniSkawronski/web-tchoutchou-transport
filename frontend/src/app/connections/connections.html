@@ -54,46 +54,86 @@
   </form>
 
   @if (loading()) {
-    <div class="status-row">
-      <mat-spinner diameter="32" />
-      <span>Chargement…</span>
-    </div>
-  }
+  <div class="status-row">
+    <mat-spinner diameter="32" />
+    <span>Chargement…</span>
+  </div>
+  } @if (error()) {
+  <p class="error">Une erreur est survenue lors du chargement des trajets.</p>
+  } @if (!loading() && connections().length > 0) {
 
-  @if (error()) {
-    <p class="error">Une erreur est survenue lors du chargement des trajets.</p>
-  }
+  <table mat-table [dataSource]="connections()" multiTemplateDataRows class="results-table">
+    <ng-container matColumnDef="departure">
+      <th mat-header-cell *matHeaderCellDef>Départ</th>
+      <td mat-cell *matCellDef="let c">{{ c.from.departure | date: 'HH:mm' }}</td>
+    </ng-container>
 
-  @if (!loading() && connections().length > 0) {
-  
-    <table mat-table [dataSource]="connections()" class="results-table">
-      <ng-container matColumnDef="departure">
-        <th mat-header-cell *matHeaderCellDef>Départ</th>
-        <td mat-cell *matCellDef="let c">{{ c.from.departure | date: 'HH:mm' }}</td>
-      </ng-container>
+    <ng-container matColumnDef="arrival">
+      <th mat-header-cell *matHeaderCellDef>Arrivée</th>
+      <td mat-cell *matCellDef="let c">{{ c.to.arrival | date: 'HH:mm' }}</td>
+    </ng-container>
 
-      <ng-container matColumnDef="arrival">
-        <th mat-header-cell *matHeaderCellDef>Arrivée</th>
-        <td mat-cell *matCellDef="let c">{{ c.to.arrival | date: 'HH:mm' }}</td>
-      </ng-container>
+    <ng-container matColumnDef="duration">
+      <th mat-header-cell *matHeaderCellDef>Durée</th>
+      <td mat-cell *matCellDef="let c">{{ formatDuration(c.duration) }}</td>
+    </ng-container>
 
-      <ng-container matColumnDef="platform">
-        <th mat-header-cell *matHeaderCellDef>Voie</th>
-        <td mat-cell *matCellDef="let c">{{ c.from.platform || '–' }}</td>
-      </ng-container>
+    <ng-container matColumnDef="changes">
+      <th mat-header-cell *matHeaderCellDef>Correspondances</th>
+      <td mat-cell *matCellDef="let c">
+        @if(changesCount(c) === 0) { Direct } @else { {{changesCount(c)}} } ( @for(product of
+        c.products; track $index; let idx = $index) { {{product}} @if(idx != c.products.length - 1)
+        {->} } )
+      </td>
+    </ng-container>
 
-      <ng-container matColumnDef="changes">
-        <th mat-header-cell *matHeaderCellDef>Correspondances</th>
-        <td mat-cell *matCellDef="let c">{{ changesCount(c) }}</td>
-      </ng-container>
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let c" [attr.colspan]="displayedColumns.length">
+        @if (expandedConnection() === c) {
+          <div class="section-list">
+            @for (s of c.sections; track $index) {
+              <div class="section">
+                <div class="section-mode">
+                  @if (s.journey) {
+                    <span class="section-category">{{ s.journey.category }}</span>
+                    <span class="section-direction">→ {{ s.journey.to }}</span>
+                  } @else {
+                    <em>À pied</em>
+                  }
+                </div>
+                <div class="section-stops">
+                  <div>
+                    <strong>{{ s.departure.station.name }}</strong>
+                    @if (s.departure.departure) {
+                      <span>— {{ s.departure.departure | date: 'HH:mm' }}</span>
+                    }
+                  </div>
+                  <div>
+                    <strong>{{ s.arrival.station.name }}</strong>
+                    @if (s.arrival.arrival) {
+                      <span>— {{ s.arrival.arrival | date: 'HH:mm' }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </td>
+    </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-  }
-
-  @if (!loading() && searchParams() && connections().length === 0 && !error()) {
-    <p class="empty">Aucun trajet trouvé.</p>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      class="connection-row"
+      [class.expanded]="expandedConnection() === row"
+      (click)="toggleExpand(row)"
+    ></tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+  </table>
+  } @if (!loading() && searchParams() && connections().length === 0 && !error()) {
+  <p class="empty">Aucun trajet trouvé.</p>
   }
 
   <map-wrapper />

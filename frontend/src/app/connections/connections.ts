@@ -80,7 +80,12 @@ export class Connections {
   readonly loading = this.connectionsResource.isLoading;
   readonly error = this.connectionsResource.error;
 
-  readonly displayedColumns = ['departure', 'arrival', 'changes'];
+  readonly displayedColumns = ['departure', 'arrival', 'duration', 'changes'];
+  readonly expandedConnection = signal<Connection | null>(null);
+
+  toggleExpand(c: Connection): void {
+    this.expandedConnection.update((curr) => (curr === c ? null : c));
+  }
 
   onStationFromInput(event: Event): void {
     this.stationFrom.set((event.target as HTMLInputElement).value);
@@ -111,5 +116,14 @@ export class Connections {
 
   changesCount(c: Connection): number {
     return c.sections.filter((s) => s.journey !== null).length - 1;
+  }
+
+  formatDuration(raw: string): string {
+    const m = /^(\d+)d(\d+):(\d+):/.exec(raw);
+    if (!m) return raw;
+    const days = +m[1];
+    const hours = +m[2];
+    const minutes = m[3];
+    return days > 0 ? `${days}j ${hours}h${minutes}` : `${hours}h${minutes}`;
   }
 }
