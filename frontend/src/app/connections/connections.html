@@ -50,7 +50,51 @@
       <mat-radio-button value="arrival">Arrivée</mat-radio-button>
     </mat-radio-group>
 
-    <button mat-flat-button type="submit" [disabled]="!isValid()">Search</button>
+    <button mat-flat-button type="submit" [disabled]="!isValid()">Rechercher</button>
   </form>
-  <map-wrapper/>
+
+  @if (loading()) {
+    <div class="status-row">
+      <mat-spinner diameter="32" />
+      <span>Chargement…</span>
+    </div>
+  }
+
+  @if (error()) {
+    <p class="error">Une erreur est survenue lors du chargement des trajets.</p>
+  }
+
+  @if (!loading() && connections().length > 0) {
+  
+    <table mat-table [dataSource]="connections()" class="results-table">
+      <ng-container matColumnDef="departure">
+        <th mat-header-cell *matHeaderCellDef>Départ</th>
+        <td mat-cell *matCellDef="let c">{{ c.from.departure | date: 'HH:mm' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="arrival">
+        <th mat-header-cell *matHeaderCellDef>Arrivée</th>
+        <td mat-cell *matCellDef="let c">{{ c.to.arrival | date: 'HH:mm' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="platform">
+        <th mat-header-cell *matHeaderCellDef>Voie</th>
+        <td mat-cell *matCellDef="let c">{{ c.from.platform || '–' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="changes">
+        <th mat-header-cell *matHeaderCellDef>Correspondances</th>
+        <td mat-cell *matCellDef="let c">{{ changesCount(c) }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  }
+
+  @if (!loading() && searchParams() && connections().length === 0 && !error()) {
+    <p class="empty">Aucun trajet trouvé.</p>
+  }
+
+  <map-wrapper />
 </section>
