@@ -54,7 +54,7 @@ export class Timetable {
   readonly resource = httpResource<StationboardResponse>(
     () =>
       apiBaseUrl +
-      `/stationboard?station=${encodeURIComponent(this.STATION())}&limit=${this.LIMIT}`,
+      `/transport/stationboard?station=${encodeURIComponent(this.STATION())}&limit=${this.LIMIT}`,
   );
 
   // resource.value() throws when the resource is in error state — gate access behind hasValue().

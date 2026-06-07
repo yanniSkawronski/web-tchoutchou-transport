@@ -1,3 +1,3 @@
-var apiBaseUrl = 'https://transport.opendata.ch/v1';
+var apiBaseUrl = 'http://localhost:3000';
 
 export default apiBaseUrl;

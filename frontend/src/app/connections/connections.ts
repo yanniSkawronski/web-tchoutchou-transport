@@ -72,7 +72,7 @@ export class Connections {
     const params = this.searchParams();
     if (!params) return undefined;
     return {
-      url: apiBaseUrl + '/connections',
+      url: apiBaseUrl + '/transport/connections',
       params: { ...params },
     };
   });
