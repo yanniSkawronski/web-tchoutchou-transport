@@ -1,11 +1,17 @@
 import { Component, computed, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { httpResource } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DATE_LOCALE, MatDateFormats, provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MapWrapper } from '../components/map-wrapper.component';
+import { Connection, ConnectionsResponse } from './connections.types';
+import apiBaseUrl from '../../constants';
 
 const FR_DATE_FORMATS: MatDateFormats = {
   parse: { dateInput: null },
@@ -17,18 +23,29 @@ const FR_DATE_FORMATS: MatDateFormats = {
   },
 };
 
+interface SearchParams {
+  from: string;
+  to: string;
+  date: string;
+  time: string;
+  isArrivalTime: 0 | 1;
+}
+
 @Component({
   selector: 'app-connections',
   imports: [
+    DatePipe,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
     MatRadioModule,
     MatButtonModule,
-    MapWrapper
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MapWrapper,
   ],
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-CH' },
     ...provideNativeDateAdapter(FR_DATE_FORMATS),
   ],
   templateUrl: './connections.html',
@@ -49,6 +66,28 @@ export class Connections {
       this.time().length > 0,
   );
 
+  readonly searchParams = signal<SearchParams | null>(null);
+
+  readonly connectionsResource = httpResource<ConnectionsResponse>(() => {
+    const params = this.searchParams();
+    if (!params) return undefined;
+    return {
+      url: apiBaseUrl + '/connections',
+      params: { ...params },
+    };
+  });
+
+  readonly connections = computed(() => this.connectionsResource.value()?.connections ?? []);
+  readonly loading = this.connectionsResource.isLoading;
+  readonly error = this.connectionsResource.error;
+
+  readonly displayedColumns = ['departure', 'arrival', 'duration', 'changes'];
+  readonly expandedConnection = signal<Connection | null>(null);
+
+  toggleExpand(c: Connection): void {
+    this.expandedConnection.update((curr) => (curr === c ? null : c));
+  }
+
   onStationFromInput(event: Event): void {
     this.stationFrom.set((event.target as HTMLInputElement).value);
   }
@@ -65,14 +104,27 @@ export class Connections {
     this.time.set((event.target as HTMLInputElement).value);
   }
 
-search(): void {
+  search(): void {
     if (!this.isValid()) return;
-    console.log({
-      stationFrom: this.stationFrom(),
-      stationTo: this.stationTo(),
-      date: this.date(),
+    this.searchParams.set({
+      from: this.stationFrom(),
+      to: this.stationTo(),
+      date: this.date()!.toISOString().slice(0, 10),
       time: this.time(),
-      timeType: this.timeType(),
+      isArrivalTime: this.timeType() === 'arrival' ? 1 : 0,
     });
+  }
+
+  changesCount(c: Connection): number {
+    return c.sections.filter((s) => s.journey !== null).length - 1;
+  }
+
+  formatDuration(raw: string): string {
+    const m = /^(\d+)d(\d+):(\d+):/.exec(raw);
+    if (!m) return raw;
+    const days = +m[1];
+    const hours = +m[2];
+    const minutes = m[3];
+    return days > 0 ? `${days}j ${hours}h${minutes}` : `${hours}h${minutes}`;
   }
 }
