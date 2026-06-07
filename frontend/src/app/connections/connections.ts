@@ -11,6 +11,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MapWrapper } from '../components/map-wrapper.component';
 import { Connection, ConnectionsResponse } from './connections.types';
+import apiBaseUrl from '../../constants';
 
 const FR_DATE_FORMATS: MatDateFormats = {
   parse: { dateInput: null },
@@ -71,7 +72,7 @@ export class Connections {
     const params = this.searchParams();
     if (!params) return undefined;
     return {
-      url: 'https://transport.opendata.ch/v1/connections',
+      url: apiBaseUrl + '/connections',
       params: { ...params },
     };
   });

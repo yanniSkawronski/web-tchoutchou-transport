@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import apiBaseUrl from '../../constants';
 
 interface Stop {
   departure: string | null;
@@ -45,7 +46,6 @@ const TIME_FORMAT = new Intl.DateTimeFormat('fr-CH', {
   styleUrl: './timetable.css',
 })
 export class Timetable {
-  readonly apiBaseUrl = 'https://transport.opendata.ch/v1';
   readonly STATIONS = ['Lausanne', 'Prilly-Malley', 'Temple de Broye'] as const;
   readonly STATION = signal<string>(this.STATIONS[0]);
   readonly LIMIT = 10;
@@ -53,7 +53,7 @@ export class Timetable {
 
   readonly resource = httpResource<StationboardResponse>(
     () =>
-      this.apiBaseUrl +
+      apiBaseUrl +
       `/stationboard?station=${encodeURIComponent(this.STATION())}&limit=${this.LIMIT}`,
   );
 
