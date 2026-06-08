@@ -50,7 +50,7 @@ services:
       db:
         condition: service_healthy
     command: >
-      sh -c "npx prisma migrate dev --name init || true && npm run start:dev:poll"
+      sh -c "npx prisma migrate deploy && npm run start:dev:poll"
     volumes:
       - ./src:/app/src
       - ./prisma:/app/prisma
