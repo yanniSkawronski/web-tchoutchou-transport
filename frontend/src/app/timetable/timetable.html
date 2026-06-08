@@ -3,12 +3,9 @@
     <mat-card-title>Départs</mat-card-title>
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="station-select">
       <mat-label>Station</mat-label>
-      <mat-select
-        [value]="STATION()"
-        (selectionChange)="STATION.set($event.value)"
-      >
-        @for (s of STATIONS; track s) {
-          <mat-option [value]="s">{{ s }}</mat-option>
+      <mat-select [value]="effectiveStation()" (selectionChange)="STATION.set($event.value)">
+        @for (s of favorites(); track s.id) {
+          <mat-option [value]="s.stationName">{{ s.stationName }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -18,9 +15,9 @@
   </mat-card-header>
 
   <mat-card-content>
-    @if (resource.isLoading()) {
+    @if (stationboardResource.isLoading()) {
     <mat-progress-bar mode="indeterminate" />
-    } @else if (resource.error()) {
+    } @else if (stationboardResource.error()) {
     <p class="error">Impossible de charger les départs.</p>
     <button mat-stroked-button (click)="reload()">Réessayer</button>
     } @else {

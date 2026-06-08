@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import apiBaseUrl from '../../constants';
+import apiBaseUrl, { Station } from '../../constants';
 
 interface Stop {
   departure: string | null;
@@ -46,12 +46,26 @@ const TIME_FORMAT = new Intl.DateTimeFormat('fr-CH', {
   styleUrl: './timetable.css',
 })
 export class Timetable {
-  readonly STATIONS = ['Lausanne', 'Prilly-Malley', 'Temple de Broye'] as const;
-  readonly STATION = signal<string>(this.STATIONS[0]);
+  readonly STATION = signal<string>('');
   readonly LIMIT = 10;
   readonly displayedColumns = ['time', 'platform', 'transportName', 'to'];
 
-  readonly resource = httpResource<StationboardResponse>(
+  readonly favoritesResource = httpResource<Station[]>(() => ({
+    url: apiBaseUrl + '/favorites/stations',
+    params: { userId: 1 },
+  }));
+
+  readonly favorites = computed<Station[]>(() =>
+    this.favoritesResource.hasValue() ? this.favoritesResource.value() : [],
+  );
+
+  readonly effectiveStation = computed(() => {
+    const selected = this.STATION();
+    if (selected) return selected;
+    return this.favorites()[0]?.stationName ?? '';
+  });
+
+  readonly stationboardResource = httpResource<StationboardResponse>(
     () =>
       apiBaseUrl +
       `/transport/stationboard?station=${encodeURIComponent(this.STATION())}&limit=${this.LIMIT}`,
@@ -59,7 +73,7 @@ export class Timetable {
 
   // resource.value() throws when the resource is in error state — gate access behind hasValue().
   readonly rows = computed<Entry[]>(() =>
-    this.resource.hasValue() ? this.resource.value().stationboard : [],
+    this.stationboardResource.hasValue() ? this.stationboardResource.value().stationboard : [],
   );
 
   formatTime(iso: string | null): string {
@@ -69,6 +83,6 @@ export class Timetable {
   }
 
   reload(): void {
-    this.resource.reload();
+    this.stationboardResource.reload();
   }
 }
