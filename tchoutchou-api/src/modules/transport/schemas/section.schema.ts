@@ -5,7 +5,7 @@ import {JourneySchema} from './journey.schema.js';
 
 export const SectionSchema = z.object({
     journey: JourneySchema.nullable(),
-    walk: z.string().nullable(),
+    walk: z.object({ duration: z.number().nullable() }).nullable(),
     departure: CheckpointSchema,
     arrival: CheckpointSchema,
 });
