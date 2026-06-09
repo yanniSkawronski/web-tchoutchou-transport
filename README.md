@@ -1,6 +1,14 @@
 # Tchoutchou Transport
 
-## Backend (`tchoutchou-api/`)
+A simple but working web app for traveling easily.
+
+## Authors
+
+Tadeusz Kondracki, Jules Rossier, Aymeric Siegenthaler, Yanni Skawronski
+
+## Quick start : build the project
+
+### Backend (`tchoutchou-api/`)
 
 Backend is using NestJS.
 
@@ -31,7 +39,7 @@ docker compose down
 
 ---
 
-## Frontend (`frontend/`)
+### Frontend (`frontend/`)
 
 Since the frontend is an angular application, you don't need docker to use it.
 
