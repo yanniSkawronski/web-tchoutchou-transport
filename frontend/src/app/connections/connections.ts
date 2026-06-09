@@ -43,7 +43,6 @@ interface SearchParams {
     MatButtonModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MapWrapper,
     StationAutocompleteComponent,
   ],
   providers: [
