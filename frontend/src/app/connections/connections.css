@@ -26,16 +26,23 @@
   color: rgba(0, 0, 0, 0.6);
 }
 
-.connection-row {
-  cursor: pointer;
+.connection-row,
+.detail-row {
+  position: relative;
 }
 
 .connection-row:hover {
   background: rgba(0, 0, 0, 0.04);
+  z-index: 2;
 }
 
 .connection-row.expanded {
   background: rgba(0, 0, 0, 0.06);
+  z-index: 2;
+}
+
+.connection-row:hover .mat-mdc-cell {
+  color: rgba(0, 0, 0, 0.87) !important;
 }
 
 .detail-row td {

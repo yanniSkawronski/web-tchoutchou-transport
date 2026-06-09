@@ -91,6 +91,20 @@
       <td mat-cell *matCellDef="let c" [attr.colspan]="displayedColumns.length">
         @if (expandedConnection() === c) {
           <div class="section-list">
+            @if (c.weatherFrom || c.weatherTo) {
+              <div class="weather-strip">
+                <div>
+                  <span class="weather-label">Départ :</span>
+                  <span class="weather-value">{{ c.weatherFrom?.icon }} {{ c.weatherFrom?.temperature ?? '?' }}°C </span>
+                  <span class="weather-desc">{{ c.weatherFrom?.condition }}</span>
+                </div>
+                <div>
+                  <span class="weather-label">Arrivée :</span>
+                  <span class="weather-value">{{ c.weatherTo?.icon }} {{ c.weatherTo?.temperature ?? '?' }}°C </span>
+                  <span class="weather-desc">{{ c.weatherTo?.condition }}</span>
+                </div>
+              </div>
+            }
             @for (s of c.sections; track $index) {
               <div class="section">
                 <div class="section-mode">

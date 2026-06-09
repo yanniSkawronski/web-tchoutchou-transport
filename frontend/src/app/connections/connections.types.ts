@@ -18,12 +18,20 @@ export interface Section {
   arrival: Stop;
 }
 
+export interface WeatherInfo {
+  temperature: number;
+  condition: string;
+  icon: string;
+}
+
 export interface Connection {
   from: Stop;
   to: Stop;
   duration: string;
   products: string[];
   sections: Section[];
+  weatherFrom?: WeatherInfo;
+  weatherTo?: WeatherInfo;
 }
 
 export interface ConnectionsResponse {
