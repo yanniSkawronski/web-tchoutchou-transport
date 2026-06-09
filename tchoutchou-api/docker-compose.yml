@@ -24,8 +24,6 @@ services:
   api:
     build: .
     container_name: tchoutchou-api
-    profiles:
-      - prod
     ports:
       - "3000:3000"
     environment:
