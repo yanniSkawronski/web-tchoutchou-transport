@@ -57,7 +57,7 @@ export class TransportApiService {
     }
 
     public getConnections(dto: GetConnectionsDto): Observable<ConnectionsResponse> {
-        const params = {transportations: ['train'], ...toPlainObject(dto)};
+        const params = toPlainObject(dto);
         return this.httpService.get<unknown>(`${this.#baseUrl}/connections`, {params}).pipe(
             map(response => {
                 const parsed = ConnectionsResponseSchema.safeParse(response.data);
@@ -76,7 +76,7 @@ export class TransportApiService {
     }
 
     public getStationboard(dto: GetStationboardDto): Observable<z.infer<typeof StationboardResponseSchema>> {
-        const params = {transportations: ['train'], ...toPlainObject(dto)};
+        const params = toPlainObject(dto);
         return this.httpService.get<unknown>(`${this.#baseUrl}/stationboard`, {params}).pipe(
             map(response => {
                 const parsed = StationboardResponseSchema.safeParse(response.data);
