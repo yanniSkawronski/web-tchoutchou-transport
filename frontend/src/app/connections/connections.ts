@@ -42,7 +42,6 @@ interface SearchParams {
     MatButtonModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MapWrapper,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'fr-CH' },
