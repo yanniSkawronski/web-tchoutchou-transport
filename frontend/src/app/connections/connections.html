@@ -2,29 +2,19 @@
   <h1>Rechercher un trajet</h1>
 
   <form class="search-form" (submit)="search(); $event.preventDefault()">
-    <mat-form-field appearance="outline">
-      <mat-label>Station de départ</mat-label>
-      <input
-        matInput
-        type="text"
-        [value]="stationFrom()"
-        (input)="onStationFromInput($event)"
-        placeholder="p. ex. Lausanne"
-        autocomplete="off"
-      />
-    </mat-form-field>
+    <app-station-autocomplete
+      label="Station de départ"
+      placeholder="p. ex. Lausanne"
+      [value]="stationFrom()"
+      (valueChange)="stationFrom.set($event)"
+    />
 
-    <mat-form-field appearance="outline">
-      <mat-label>Station d'arrivée</mat-label>
-      <input
-        matInput
-        type="text"
-        [value]="stationTo()"
-        (input)="onStationToInput($event)"
-        placeholder="p. ex. Genève"
-        autocomplete="off"
-      />
-    </mat-form-field>
+    <app-station-autocomplete
+      label="Station d'arrivée"
+      placeholder="p. ex. Genève"
+      [value]="stationTo()"
+      (valueChange)="stationTo.set($event)"
+    />
 
     <div class="form-row">
       <mat-form-field appearance="outline">
@@ -90,34 +80,34 @@
     <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let c" [attr.colspan]="displayedColumns.length">
         @if (expandedConnection() === c) {
-          <div class="section-list">
-            @for (s of c.sections; track $index) {
-              <div class="section">
-                <div class="section-mode">
-                  @if (s.journey) {
-                    <span class="section-category">{{ s.journey.category }}</span>
-                    <span class="section-direction">→ {{ s.journey.to }}</span>
-                  } @else {
-                    <em>À pied</em>
-                  }
-                </div>
-                <div class="section-stops">
-                  <div>
-                    <strong>{{ s.departure.station.name }}</strong>
-                    @if (s.departure.departure) {
-                      <span>— {{ s.departure.departure | date: 'HH:mm' }}</span>
-                    }
-                  </div>
-                  <div>
-                    <strong>{{ s.arrival.station.name }}</strong>
-                    @if (s.arrival.arrival) {
-                      <span>— {{ s.arrival.arrival | date: 'HH:mm' }}</span>
-                    }
-                  </div>
-                </div>
+        <div class="section-list">
+          @for (s of c.sections; track $index) {
+          <div class="section">
+            <div class="section-mode">
+              @if (s.journey) {
+              <span class="section-category">{{ s.journey.category }}</span>
+              <span class="section-direction">→ {{ s.journey.to }}</span>
+              } @else {
+              <em>À pied</em>
+              }
+            </div>
+            <div class="section-stops">
+              <div>
+                <strong>{{ s.departure.station.name }}</strong>
+                @if (s.departure.departure) {
+                <span>— {{ s.departure.departure | date: 'HH:mm' }}</span>
+                }
               </div>
-            }
+              <div>
+                <strong>{{ s.arrival.station.name }}</strong>
+                @if (s.arrival.arrival) {
+                <span>— {{ s.arrival.arrival | date: 'HH:mm' }}</span>
+                }
+              </div>
+            </div>
           </div>
+          }
+        </div>
         }
       </td>
     </ng-container>
