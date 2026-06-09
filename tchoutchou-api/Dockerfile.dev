@@ -10,8 +10,7 @@ COPY prisma ./prisma
 COPY prisma.config.ts ./
 COPY tsconfig.json ./
 COPY tsconfig.build.json ./
-COPY nest-cli.json ./
-RUN sed -i 's/"deleteOutDir": true/"deleteOutDir": false/' nest-cli.json
+COPY nest-cli.dev.json ./nest-cli.json
 
 COPY src ./src
 

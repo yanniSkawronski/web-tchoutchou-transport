@@ -24,6 +24,8 @@ services:
   api:
     build: .
     container_name: tchoutchou-api
+    profiles:
+      - prod
     ports:
       - "3000:3000"
     environment:
@@ -39,16 +41,18 @@ services:
     container_name: tchoutchou-api-dev
     profiles:
       - dev
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/tchoutchou
       - NODE_ENV=development
+      - TSC_WATCHFILE=DynamicPriorityPolling
     depends_on:
       db:
         condition: service_healthy
     command: >
-      sh -c "npx prisma migrate deploy && npm run start:dev:poll"
+      sh -c "sleep 2 && npx prisma migrate deploy && exec npm run start:dev"
     volumes:
       - ./src:/app/src
       - ./prisma:/app/prisma

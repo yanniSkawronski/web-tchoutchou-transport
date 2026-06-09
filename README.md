@@ -12,11 +12,11 @@ Tadeusz Kondracki, Jules Rossier, Aymeric Siegenthaler, Yanni Skawronski
 
 Backend is using NestJS.
 
-**Run in production mode (default):**
+**Run in production mode:**
 
 ```bash
 cd tchoutchou-api
-docker compose up --build
+docker compose --profile prod up --build
 ```
 
 API will be on http://localhost:3000.  
@@ -63,6 +63,6 @@ npm run build
 
 | What | Command | URL |
 |------|---------|-----|
-| Backend (prod) | `docker compose up --build` | http://localhost:3000 |
+| Backend (prod) | `docker compose --profile prod up --build` | http://localhost:3000 |
 | Backend (dev) | `docker compose --profile dev up --build` | http://localhost:3000 |
 | Frontend | `npm start` | http://localhost:4200 |
