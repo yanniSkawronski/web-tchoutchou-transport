@@ -9,7 +9,7 @@ import {WeatherApiService} from "./weather-api.service.js";
 @Module({
     imports: [
         HttpModule.register({
-            timeout: 5000,
+            timeout: 30000,
             maxRedirects: 5,
             headers: {
                 'Content-Type': 'application/json',

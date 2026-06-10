@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { z } from 'zod';
 
 const OpenMeteoResponseSchema = z.object({
@@ -49,24 +49,26 @@ export class WeatherApiService {
           timezone: 'auto',
         },
       })
-      .pipe(
-        map((response) => {
-          const parsed = OpenMeteoResponseSchema.safeParse(response.data);
-          // this should never occur, but it's better to be safe than sorry
-          if (!parsed.success) {
-            throw new Error('Invalid response from weather API');
-          }
+        .pipe(
+          map((response) => {
+            const parsed = OpenMeteoResponseSchema.safeParse(response.data);
+            if (!parsed.success) {
+              return { temperature: 0, condition: 'Inconnu', icon: '❓' };
+            }
 
-          const { time: times, temperature_2m: temps, weather_code: codes } = parsed.data.hourly;
-          const targetHour = date.getHours();
-          const closestIndex = Math.min(targetHour, times.length - 1);
+            const { time: times, temperature_2m: temps, weather_code: codes } = parsed.data.hourly;
+            const targetHour = date.getHours();
+            const closestIndex = Math.min(targetHour, times.length - 1);
 
-          const temp = temps[closestIndex] ?? 0;
-          const code = codes[closestIndex] ?? -1;
-          const { condition, icon } = getWmoDescription(code);
+            const temp = temps[closestIndex] ?? 0;
+            const code = codes[closestIndex] ?? -1;
+            const { condition, icon } = getWmoDescription(code);
 
-          return { temperature: temp, condition, icon };
-        }),
-      );
+            return { temperature: temp, condition, icon };
+          }),
+          catchError(() =>
+            of({ temperature: 0, condition: 'Inconnu', icon: '❓' }),
+          ),
+        );
   }
 }

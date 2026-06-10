@@ -24,6 +24,7 @@
           [matDatepicker]="datePicker"
           [value]="date()"
           (dateChange)="onDateChange($event)"
+          [max]="maxDate()"
         />
         <mat-datepicker-toggle matIconSuffix [for]="datePicker" />
         <mat-datepicker #datePicker />
