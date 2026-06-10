@@ -66,3 +66,15 @@ npm run build
 | Backend (prod) | `docker compose --profile prod up --build` | http://localhost:3000 |
 | Backend (dev) | `docker compose --profile dev up --build` | http://localhost:3000 |
 | Frontend | `npm start` | http://localhost:4200 |
+
+## AI usage
+
+Even if we built the app ourself, we have used the help of AI. We used it for the following things : 
+
+- Help use to discover how to use the zod package
+- Map the 100 possible codes from weather API to a human friendly verb
+- Convert from an any poc to a banned any typescript project
+- Help to create the docker development environment
+- Generate an API usage file
+- Icons suggestions for an appropriate situation
+- Exemples of advanced usage of angular material (for the stations suggestions)
