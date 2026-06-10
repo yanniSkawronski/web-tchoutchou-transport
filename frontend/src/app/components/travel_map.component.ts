@@ -58,6 +58,7 @@ interface ConnectionsResponse {
       leaflet
       [leafletLayers]="[...(start_layer()), ...(end_layer()), ...(itinerary_layer())]"
       [leafletOptions]="leaflet_options"
+      (leafletClick)="onClick($event)"
       >
   </div>
   `,
@@ -114,7 +115,6 @@ export class TravelMap {
 
   readonly itinerary_layer = computed(() => this.create_itinerary(this.itinerary()));
 
-  layers: any[] = [];
   leaflet_options = {
     layers: [
       tileLayer('https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', { maxZoom: 12, attribution: '...', minZoom: 8 }),
@@ -123,22 +123,28 @@ export class TravelMap {
     center: latLng(46.534710, 6.580459)
   };
 
-  // onClick({ latlng, ...rest }: {latlng: LatLng}) {
-  //   if (this.state() !== 'full')
-  //     this.http.get(
-  //       apiBaseUrl + '/transport/locations',
-  //       {
-  //         params: {
-  //           x: latlng.lat,
-  //           y: latlng.lng
-  //         }
-  //       }
-  //     ).subscribe((s) => {
-  //       if (this.state() === 'empty')
-  //         this.start_station_name.set(s.)
-  //     });
-  //   this.layers.push(marker([latlng.lat, latlng.lng]));
-  // }
+  onClick({ latlng, ...rest }: {latlng: LatLng}) {
+    if (this.state() !== 'full') {
+      this.http.get<{stations: Station[]}>(
+        apiBaseUrl + '/transport/locations',
+        {
+          params: {
+            x: latlng.lat,
+            y: latlng.lng,
+            type: 'station'
+          }
+        }
+      ).subscribe((s) => {
+        const station_name = s.stations.filter((s) => s.coordinate.x !== null && s.coordinate.y !== null).at(0)?.name;
+        if (this.state() === 'empty') {
+          this.set_start_station(station_name);
+        }
+        else {
+          this.set_end_station(station_name);
+        }
+      });
+    }
+  }
 
   private marker_start(lat: number, lng: number) {
     return marker([lat, lng], {
@@ -178,16 +184,15 @@ export class TravelMap {
   }
 
   private create_itinerary(itinerary: Section[] | undefined){
-    console.log("it:", itinerary);
     if (itinerary !== undefined) {
       let layers: any[] = [];
       let i = 0;
       for (const s of itinerary) {
-        console.log(s);
+        if (!s.journey)
+          continue;
         layers = layers.concat(this.make_section_layer(s, i));
         i++;
       }
-      console.log(layers);
       return layers;
     }
     return []
@@ -198,7 +203,7 @@ export class TravelMap {
     let path: number[][] = section.journey.passList.map((s) => [s.station.coordinate.x, s.station.coordinate.y]);
     return [
         polyline(path as any, { color: color, weight: 7, opacity: 0.6 }),
-        ...(path.map(([x, y]) => circle([x, y], {color: 'blue', weight: 2, opacity: 1.0, fillOpacity: 0.7, radius: 500})))
+        ...(path.map(([x, y]) => circleMarker([x, y], {color: 'blue', weight: 2, opacity: 1.0, fillOpacity: 0.7, radius: 3})))
       ]
   }
 
@@ -219,6 +224,36 @@ export class TravelMap {
   private click_end(){
     this.end_station_name.set('');
     const queryParams: Params = { start: this.start_station_name() };
+
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams
+      }
+    );
+  }
+
+  private set_start_station(name: string | undefined) {
+    if (name === undefined)
+      return;
+    this.start_station_name.set(name);
+    const queryParams: Params = { start: name };
+
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams
+      }
+    );
+  }
+
+  private set_end_station(name: string | undefined) {
+    if (name === undefined)
+      return;
+    this.end_station_name.set(name);
+    const queryParams: Params = { start: this.start_station_name(), end: name };
 
     this.router.navigate(
       [],
