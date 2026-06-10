@@ -105,7 +105,8 @@
   gap: 0.5rem;
 }
 
-.search-form mat-form-field {
+.search-form mat-form-field,
+.search-form app-station-autocomplete {
   width: 100%;
 }
 

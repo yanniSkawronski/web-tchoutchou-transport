@@ -10,6 +10,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MapWrapper } from '../components/map-wrapper.component';
+import { StationAutocompleteComponent } from '../components/station-autocomplete.component';
 import { Connection, ConnectionsResponse } from './connections.types';
 import apiBaseUrl from '../../constants';
 
@@ -42,6 +43,7 @@ interface SearchParams {
     MatButtonModule,
     MatTableModule,
     MatProgressSpinnerModule,
+    StationAutocompleteComponent,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'fr-CH' },
@@ -56,6 +58,7 @@ export class Connections {
   readonly date = signal<Date | null>(null);
   readonly time = signal<string>('');
   readonly timeType = signal<'departure' | 'arrival'>('departure');
+  readonly userId = 1;
 
   readonly isValid = computed(
     () =>
@@ -85,14 +88,6 @@ export class Connections {
 
   toggleExpand(c: Connection): void {
     this.expandedConnection.update((curr) => (curr === c ? null : c));
-  }
-
-  onStationFromInput(event: Event): void {
-    this.stationFrom.set((event.target as HTMLInputElement).value);
-  }
-
-  onStationToInput(event: Event): void {
-    this.stationTo.set((event.target as HTMLInputElement).value);
   }
 
   onDateChange(event: MatDatepickerInputEvent<Date>): void {
