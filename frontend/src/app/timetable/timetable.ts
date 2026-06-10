@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { httpResource } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -46,6 +46,7 @@ const TIME_FORMAT = new Intl.DateTimeFormat('fr-CH', {
   styleUrl: './timetable.css',
 })
 export class Timetable {
+  readonly destroyRef = inject(DestroyRef);
   readonly STATION = signal<string>('');
   readonly LIMIT = 10;
   readonly displayedColumns = ['time', 'platform', 'transportName', 'to'];
@@ -77,6 +78,11 @@ export class Timetable {
       `/transport/stationboard?station=${encodeURIComponent(station)}&limit=${this.LIMIT}`
     );
   });
+
+  constructor() {
+    const intervalId = setInterval(() => this.stationboardResource.reload(), 30000);
+    this.destroyRef.onDestroy(() => clearInterval(intervalId));
+  }
 
   // resource.value() throws when the resource is in error state — gate access behind hasValue().
   readonly rows = computed<Entry[]>(() =>
