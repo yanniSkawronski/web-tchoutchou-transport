@@ -18,14 +18,31 @@ interface StationsQueryResponse {
   stations: Station[];
 }
 
+interface Section {
+  journey: {
+    category?: string,
+    number?: string,
+    operator?: string,
+    to: string,
+    passList: {
+      station: Station
+    }[]
+  }
+}
+
+const section_colors = [
+  'red',
+  'lime',
+  'fuchsia',
+  'aqua',
+  'yellow',
+  'green',
+  'orange',
+  'purple'
+]
+
 interface Connection {
-  sections: {
-    journey: {
-      passList: {
-        station: Station
-      }[]
-    }
-  }[]
+  sections: Section[]
 }
 
 interface ConnectionsResponse {
@@ -90,7 +107,7 @@ export class TravelMap {
   });
   readonly itinerary = computed(() => {
     if (this.itinerary_query.hasValue()) {
-      return this.itinerary_query.value().connections.at(0)?.sections.at(0)?.journey.passList.map(e => e.station);
+      return this.itinerary_query.value().connections.at(0)?.sections
     }
     return undefined;
   });
@@ -160,16 +177,30 @@ export class TravelMap {
     }
   }
 
-  private create_itinerary(itinerary: Station[] | undefined){
-    if (itinerary !== undefined && itinerary.length > 1) {
-      let path: number[][] = itinerary.map((s) => [s.coordinate.x, s.coordinate.y]);
-      return [
-        polyline(path as any, { color: 'red', weight: 7, opacity: 0.6 }),
-        ...(path.map(([x, y]) => circle([x, y], {color: 'blue', weight: 2, opacity: 1.0, fillOpacity: 0.7, radius: 500})))
-      ]
+  private create_itinerary(itinerary: Section[] | undefined){
+    console.log("it:", itinerary);
+    if (itinerary !== undefined) {
+      let layers: any[] = [];
+      let i = 0;
+      for (const s of itinerary) {
+        console.log(s);
+        layers = layers.concat(this.make_section_layer(s, i));
+        i++;
+      }
+      console.log(layers);
+      return layers;
     }
     return []
   };
+
+  private make_section_layer(section: Section, id: number = 0) {
+    const color = section_colors[id % section_colors.length];
+    let path: number[][] = section.journey.passList.map((s) => [s.station.coordinate.x, s.station.coordinate.y]);
+    return [
+        polyline(path as any, { color: color, weight: 7, opacity: 0.6 }),
+        ...(path.map(([x, y]) => circle([x, y], {color: 'blue', weight: 2, opacity: 1.0, fillOpacity: 0.7, radius: 500})))
+      ]
+  }
 
   private click_start(){
     if (this.state() === 'full')
