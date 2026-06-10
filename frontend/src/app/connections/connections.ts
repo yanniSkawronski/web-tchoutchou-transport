@@ -60,6 +60,12 @@ export class Connections {
   readonly timeType = signal<'departure' | 'arrival'>('departure');
   readonly userId = 1;
 
+  readonly maxDate = computed(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 15);
+    return d;
+  });
+
   readonly isValid = computed(
     () =>
       this.stationFrom().trim().length > 0 &&
