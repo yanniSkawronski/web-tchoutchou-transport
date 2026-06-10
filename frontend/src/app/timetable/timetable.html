@@ -1,13 +1,16 @@
 <mat-card class="timetable-card">
   <mat-card-header class="timetable-header">
     <mat-card-title>Départs</mat-card-title>
-    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="station-select">
+     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="station-select">
       <mat-label>Station</mat-label>
-      <mat-select [value]="effectiveStation()" (selectionChange)="STATION.set($event.value)">
+      <mat-select [value]="effectiveStation()" (selectionChange)="STATION.set($event.value)" [disabled]="favorites().length === 0">
         @for (s of favorites(); track s.id) {
           <mat-option [value]="s.stationName">{{ s.stationName }}</mat-option>
         }
       </mat-select>
+      @if (favorites().length === 0) {
+        <mat-hint>Ajoutez une station aux favoris pour commencer</mat-hint>
+      }
     </mat-form-field>
     <button mat-icon-button class="reload-btn" aria-label="Recharger" (click)="reload()">
       <mat-icon>refresh</mat-icon>

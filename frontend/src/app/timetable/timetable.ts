@@ -65,11 +65,18 @@ export class Timetable {
     return this.favorites()[0]?.stationName ?? '';
   });
 
-  readonly stationboardResource = httpResource<StationboardResponse>(
-    () =>
+  readonly stationboardResource = httpResource<StationboardResponse>(() => {
+    const station = this.effectiveStation();
+    if (!station){
+      // no station => no call because we don't know where to fetch from
+      // note : the template handle this case with a disabled select :)
+      return undefined;
+    }
+    return (
       apiBaseUrl +
-      `/transport/stationboard?station=${encodeURIComponent(this.STATION())}&limit=${this.LIMIT}`,
-  );
+      `/transport/stationboard?station=${encodeURIComponent(station)}&limit=${this.LIMIT}`
+    );
+  });
 
   // resource.value() throws when the resource is in error state — gate access behind hasValue().
   readonly rows = computed<Entry[]>(() =>
